@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypeSet · 品牌专属公众号排版</title>
+<style>
+  :root {
+    --apple-blue: #0071e3;
+    --apple-blue-hover: #0077ed;
+    --near-black: #1d1d1f;
+    --text-gray: #6e6e73;
+    --bg: #f5f5f7;
+    --card-bg: #ffffff;
+    --border: #d2d2d7;
+    --code-bg: #f5f5f7;
+    --hl-bg: rgba(0, 113, 227, 0.12);
+    --radius-card: 20px;
+    --radius-input: 18px;
+    --shadow-card: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.05);
+    --shadow-card-hover: 0 2px 4px rgba(0,0,0,0.05), 0 12px 28px rgba(0,0,0,0.08);
+    --shadow-btn: 0 6px 16px rgba(0, 113, 227, 0.32);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  html { scrollbar-gutter: stable; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(0, 113, 227, 0.07), transparent 60%),
+      radial-gradient(900px 520px at 90% -5%, rgba(0, 113, 227, 0.05), transparent 55%),
+      var(--bg);
+    color: var(--near-black);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .navbar {
+    background: transparent;
+    border-bottom: none;
+    padding: 48px 24px 0;
+    text-align: center;
+  }
+  .navbar-inner { max-width: 1240px; margin: 0 auto; }
+  .brand-name {
+    font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    font-size: 52px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1;
+    color: #1d1d1f;
+    margin: 0;
+  }
+  .wrap { display: flex; gap: 20px; max-width: 1240px; margin: 30px auto; padding: 0 24px; align-items: flex-start; }
+  .pane { flex: 1; min-width: 0; }
+  .pane-title { font-size: 13px; font-weight: 600; color: var(--text-gray); margin-bottom: 10px; letter-spacing: 0.02em; display: flex; align-items: center; gap: 6px; }
+  .pane-title::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--apple-blue); }
+  .input-wrap { position: relative; }
+  .input-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  textarea {
+    width: 100%; height: 640px;
+    border: none; border-radius: var(--radius-input);
+    padding: 20px; font-size: 15px; line-height: 1.7;
+    font-family: "SF Mono", "Menlo", "Consolas", "Microsoft YaHei", monospace;
+    resize: vertical; outline: none; background: var(--card-bg); color: var(--near-black);
+  }
+  textarea:focus { box-shadow: 0 0 0 4px rgba(0,113,227,0.10); }
+  /* 自定义滚动条：去掉箭头，只留圆角滑杆，滑杆内缩不贴边框 */
+  textarea { scrollbar-width: thin; scrollbar-color: #c7c7cc transparent; }
+  textarea::-webkit-scrollbar { width: 12px; }
+  textarea::-webkit-scrollbar-track { background: transparent; }
+  textarea::-webkit-scrollbar-thumb {
+    background-color: #c7c7cc;
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+  textarea::-webkit-scrollbar-button { display: none; }
+  .preview {
+    background: var(--card-bg); border-radius: var(--radius-card);
+    border: none;
+    padding: 64px 56px; min-height: 640px;
+    box-shadow: var(--shadow-card);
+  }
+  .preview-inner { max-width: 620px; margin: 0 auto; }
+  /* 主标题：苹果蓝 + 浅蓝背景填充 */
+  .preview h1 {
+    font-size: 48px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.15;
+    color: var(--apple-blue);
+    background: var(--hl-bg);
+    padding: 6px 14px; border-radius: 10px;
+    margin: 0 0 32px;
+  }
+  .preview h2 {
+    font-size: 34px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.12;
+    margin: 48px 0 16px; color: var(--apple-blue);
+  }
+  .preview p {
+    font-size: 16px; line-height: 1.5; margin: 0 0 32px; color: var(--near-black);
+  }
+  .preview strong { color: var(--apple-blue); font-weight: 600; }
+  /* 小标题：苹果蓝 + 加粗 + 放大一号 + 下划线（下划线只盖文字，不盖冒号） */
+  .preview .li-label {
+    color: var(--apple-blue); font-weight: 700; font-size: 19px;
+  }
+  /* 关键词：苹果蓝 + 加粗 + 稍放大 + 浅蓝背景填充（标记感，与小标题区分） */
+  .preview .hl {
+    color: var(--apple-blue); font-weight: 700; font-size: 17px;
+    background: var(--hl-bg);
+    padding: 1px 5px; border-radius: 4px;
+  }
+  .preview blockquote {
+    border-left: 3px solid var(--border); background: var(--code-bg);
+    padding: 20px 24px; margin: 24px 0; border-radius: 0 8px 8px 0;
+    font-size: 17px; line-height: 1.6; color: var(--near-black);
+  }
+  .preview ul { margin: 0 0 20px; padding-left: 22px; }
+  .preview li { font-size: 16px; line-height: 1.6; margin: 10px 0; color: var(--near-black); }
+  /* 带序号的小节标题（如"一、少即是多"）：加粗，独立成段，与正文区分 */
+  .preview .sec-title {
+    font-size: 19px; font-weight: 700; color: var(--near-black);
+    margin: 36px 0 14px; letter-spacing: -0.01em;
+  }
+  .preview hr { border: none; border-top: 1px solid var(--border); margin: 44px 0; }
+  .preview a { color: var(--apple-blue); text-decoration: none; }
+  .preview a:hover { text-decoration: underline; }
+  .empty { min-height: 500px; display: flex; align-items: center; justify-content: center; color: var(--text-gray); }
+  .empty svg { animation: emptyIn 0.45s var(--ease-spring) both; }
+  @keyframes emptyIn { from { opacity: 0; transform: scale(0.88); } to { opacity: 1; transform: scale(1); } }
+  .toolbar { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .toolbar-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    border: none; border-radius: 980px; padding: 11px 22px;
+    font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .btn-primary { background: var(--apple-blue); color: #fff; }
+  .btn-primary:hover { background: var(--apple-blue-hover); box-shadow: var(--shadow-btn); }
+  .btn-primary:active { background: #0062c9; }
+  .btn-secondary { background: #e8e8ed; color: var(--near-black); }
+  .btn-secondary:hover { background: #dcdce1; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: scale(0.97); transition-duration: 0.08s; }
+  ::selection { background: rgba(0, 113, 227, 0.18); }
+  .btn:focus-visible { outline: 3px solid rgba(0, 113, 227, 0.4); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    .empty svg { animation: none; }
+    .btn:hover { transform: none; }
+  }
+  @media (max-width: 820px) {
+    .wrap { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <h1 class="brand-name">TypeSet</h1>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <div class="pane">
+      <div class="pane-title">编辑</div>
+      <div class="input-wrap">
+        <textarea id="input"></textarea>
+        <div class="input-empty" id="input-empty"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c7c7cc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></div>
+      </div>
+      <div class="toolbar">
+        <div class="toolbar-row">
+          <button class="btn btn-primary" id="btn-copy"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制到公众号</button>
+        </div>
+        <div class="toolbar-row">
+          <button class="btn btn-secondary" id="btn-sample1">示例1·约200字</button>
+          <button class="btn btn-secondary" id="btn-sample2">示例2·约500字</button>
+          <button class="btn btn-secondary" id="btn-sample3">示例3·约1000字</button>
+        </div>
+        <div class="toolbar-row">
+          <button class="btn btn-secondary" id="btn-clear">清空</button>
+        </div>
+      </div>
+    </div>
+    <div class="pane">
+      <div class="pane-title">预览</div>
+      <div class="preview"><div class="preview-inner" id="preview"><div class="empty"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c7c7cc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div></div></div>
+    </div>
+  </div>
+
+<script>
+(function () {
+  var input = document.getElementById('input');
+  var inputEmpty = document.getElementById('input-empty');
+  var preview = document.getElementById('preview');
+  var btnCopy = document.getElementById('btn-copy');
+  var btnSample1 = document.getElementById('btn-sample1');
+  var btnSample2 = document.getElementById('btn-sample2');
+  var btnSample3 = document.getElementById('btn-sample3');
+  var btnClear = document.getElementById('btn-clear');
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // 把超长的一行拆成多段：有句末标点就只在句末标点处切（避免把"做对取舍"这类词切碎），
+  // 完全没有句末标点时才按字数兜底拆（优先回退到逗号/冒号/空格）
+  function splitLongLine(line, max) {
+    if (line.length <= max) return [line];
+    var result = [];
+    var buffer = '';
+    var hasEnd = /[。！？；…]/.test(line);
+    for (var i = 0; i < line.length; i++) {
+      buffer += line[i];
+      var isEnd = '。！？；…'.indexOf(line[i]) !== -1;
+      if (isEnd && buffer.length >= 20) {
+        result.push(buffer);
+        buffer = '';
+      } else if (!hasEnd && buffer.length >= 60) {
+        var cut = -1;
+        for (var k = buffer.length - 2; k >= 0; k--) {
+          if ('，、,；;：: '.indexOf(buffer[k]) !== -1) { cut = k; break; }
+        }
+        if (cut > 0) { result.push(buffer.slice(0, cut + 1)); buffer = buffer.slice(cut + 1); }
+        else { result.push(buffer); buffer = ''; }
+      }
+    }
+    if (buffer) result.push(buffer);
+    return result;
+  }
+
+  // 行内：引号关键词高亮 + **重点**（可选）
+  function inline(text) {
+    text = escapeHtml(text);
+    text = text.replace(/([“「])(.+?)([”」])/g, function (_, a, b, c) {
+      return a + '<span class="hl">' + b + '</span>' + c;
+    });
+    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    return text;
+  }
+
+  // 通用：识别"小标题：内容"结构，小标题加工（下划线只盖小标题文字，冒号不参与）
+  function paraWithLabel(text) {
+    var m = text.match(/^([^：:]{1,24})([：:])\s*(.*)$/);
+    if (m && m[3]) {
+      return '<span class="li-label">' + inline(m[1]) + '</span>' + m[2] + inline(m[3]);
+    }
+    return inline(text);
+  }
+
+  // 没有明确标题时，从正文提取第一句（主题句）概括为标题
+  function extractTitle(t) {
+    var idx = -1;
+    for (var k = 0; k < Math.min(30, t.length); k++) {
+      if ('。！？；…'.indexOf(t[k]) !== -1) { idx = k; break; }
+    }
+    if (idx > 0) {
+      return { title: t.slice(0, idx), rest: t.slice(idx + 1) };
+    }
+    return { title: t.slice(0, 30), rest: t.slice(30) };
+  }
+
+  function render(text) {
+    // 先按换行拆，再对超长行做自动拆分
+    var raw = text.split('\n');
+    var lines = [];
+    for (var i = 0; i < raw.length; i++) {
+      var t = raw[i].trim();
+      if (t === '') { lines.push(''); continue; }
+      lines = lines.concat(splitLongLine(t, 60));
+    }
+
+    var html = '';
+    var inList = false;
+    var hasH1 = false;
+
+    function closeList() {
+      if (inList) { html += '</ul>'; inList = false; }
+    }
+    function pushTitle(content) {
+      if (!hasH1) { html += '<h1>' + inline(content) + '</h1>'; hasH1 = true; }
+      else { html += '<h2>' + inline(content) + '</h2>'; }
+    }
+
+    for (var j = 0; j < lines.length; j++) {
+      var t = lines[j];
+      if (t === '') { closeList(); continue; }
+
+      // 行首提示词：标题：xxx → 作为标题（"标题："本身不输出）
+      var titleCmd = t.match(/^标题[：:]\s*(.+)$/);
+      if (titleCmd) { closeList(); pushTitle(titleCmd[1]); continue; }
+
+      // 行首提示词：正文：xxx → 作为正文（"正文："本身不输出）
+      var bodyCmd = t.match(/^正文[：:]\s*(.+)$/);
+      if (bodyCmd) { closeList(); html += '<p>' + paraWithLabel(bodyCmd[1]) + '</p>'; continue; }
+
+      // 标题判定：短块直接当标题；长块（无明确标题）则概括出标题
+      if (!hasH1) {
+        var titleText, rest = '';
+        if (t.length <= 30) {
+          titleText = t;
+        } else {
+          var ex = extractTitle(t);
+          titleText = ex.title;
+          rest = ex.rest;
+        }
+        hasH1 = true;
+        html += '<h1>' + inline(titleText) + '</h1>';
+        if (rest) html += '<p>' + paraWithLabel(rest) + '</p>';
+        continue;
+      }
+
+      // 带序号的小节标题：一、二、三、…（中文序号开头，加粗区分）
+      var sec = t.match(/^[一二三四五六七八九十百]+[、.．]\s*(.+)$/);
+      if (sec) { closeList(); html += '<p class="sec-title">' + inline(sec[1]) + '</p>'; continue; }
+
+      // 独立成段的"结语/引言/前言"这类小标题词，同样加粗成小节标题
+      if (/^(结语|引言|前言|序言|总结|后记|尾声|概述|摘要|致谢)$/.test(t)) {
+        closeList(); html += '<p class="sec-title">' + inline(t) + '</p>'; continue;
+      }
+
+      // 列表：- · • * 或 数字 1. / 1、（允许符号后没有空格）
+      var lm = t.match(/^([-·•*]|\d{1,2}[.、])\s*(.*)$/);
+      if (lm && lm[2]) {
+        if (!inList) { html += '<ul>'; inList = true; }
+        html += '<li>' + paraWithLabel(lm[2]) + '</li>';
+        continue;
+      }
+
+      // 引用（可选，兼容懂 markdown 的人）
+      if (t.indexOf('> ') === 0) { closeList(); html += '<blockquote>' + inline(t.slice(2)) + '</blockquote>'; continue; }
+
+      // 正文：每一行一个段落，且自动识别"小标题：内容"
+      closeList();
+      html += '<p>' + paraWithLabel(t) + '</p>';
+    }
+    closeList();
+    return html;
+  }
+
+  var emptyHTML = '<div class="empty"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c7c7cc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>';
+
+  function update() {
+    var val = input.value;
+    inputEmpty.style.display = (val.trim() === '') ? 'flex' : 'none';
+    if (val.trim() === '') {
+      preview.innerHTML = emptyHTML;
+      return;
+    }
+    preview.innerHTML = render(val); // 实时排版：输入即渲染，所见即所得
+    fitTitleNow();
+  }
+
+  // —— 标题字号自适应：标题越长，字号越小，尽量压成单行，避免"两行只剩一两个字" ——
+  var titleSizes = [48, 44, 40, 36, 33, 30, 27, 24, 22, 20, 18, 16];
+
+  function measureTextWidth(text, fontSize) {
+    var span = document.createElement('span');
+    span.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;white-space:nowrap;' +
+      'font-size:' + fontSize + 'px;font-weight:700;letter-spacing:-0.03em;' +
+      'font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;';
+    span.textContent = text;
+    document.body.appendChild(span);
+    var w = span.offsetWidth;
+    document.body.removeChild(span);
+    return w;
+  }
+
+  function fitTitle(el) {
+    var cs = getComputedStyle(el);
+    var maxWidth = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    var text = el.textContent;
+    for (var i = 0; i < titleSizes.length; i++) {
+      el.style.fontSize = titleSizes[i] + 'px';
+      if (measureTextWidth(text, titleSizes[i]) <= maxWidth) break;
+    }
+  }
+
+  function fitTitleNow() {
+    var h1 = preview.querySelector('h1');
+    if (h1) fitTitle(h1);
+  }
+
+  function copyRich(html) {
+    var container = document.createElement('div');
+    container.innerHTML = html;
+    container.setAttribute('contenteditable', 'true');
+    container.style.position = 'fixed';
+    container.style.left = '-9999px';
+    container.style.top = '0';
+    document.body.appendChild(container);
+
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+
+    sel.removeAllRanges();
+    document.body.removeChild(container);
+    return ok;
+  }
+
+  var sample1 = 'Apple Intelligence 让 AI 真正融入日常\n\n真正的智能，不是让你去适应工具，而是让工具自然地融入你的每一次操作。Apple Intelligence 深度集成在 iPhone、iPad 和 Mac 里，而不是一个单独的 App。\n\n它能在你需要的地方，悄悄帮你完成这些事：\n\n1. 写作辅助：在你写邮件、消息时，帮你改写、校对、总结\n2. 照片整理：用自然语言搜索照片，比如“上次和妈妈拍的那张”\n3. 通知摘要：把一堆通知浓缩成一条重点\n4. 专注模式：只显示真正重要的打扰\n\n苹果把“把 AI 藏进体验里”这件事做到了极致，让技术不喧宾夺主。';
+
+  var sample2 = 'iPhone 16 的相机，不只是多了一颗镜头\n\niPhone 16 系列把相机从“会拍照”升级到了“懂拍照”。全新加入的相机控制按钮，让抓拍快过以往任何一代 iPhone。\n\n相机控制：一个按钮搞定一切\n\n轻轻一按就能启动相机，再按一下拍照，按住不放开始录像。它的触感反馈做得恰到好处，即使眼睛不看屏幕，也能盲操作而不按错。\n\n4800 万像素主摄：细节经得起放大\n\n主摄升级到 4800 万像素，支持 2 倍无损裁切。拍出来的照片，连发丝和树叶的纹理都清晰可辨，暗光环境下的噪点也明显减少。\n\n深度融合与计算摄影：每一次快门都在算\n\n按下快门的瞬间，芯片会同时处理多张不同曝光的照片，再合成一张。这就是“计算摄影”的威力——你只需要负责构图，剩下的交给算法。\n\n超广角与微距：看得更宽，也看得更近\n\n超广角镜头视野更开阔，微距模式能拍清花瓣上的露珠。出门旅行，一颗镜头就能同时兼顾大场景和特写。\n\n空间视频：把回忆拍成立体\n\niPhone 16 支持拍摄空间视频，搭配 Apple Vision Pro 观看时，画面会呈现出立体深度，仿佛重新回到按下快门的那一刻。\n\n一句话总结：它不是把参数堆得更高，而是让每个人都能随手拍出满意的照片。';
+
+  var sample3 = 'Apple 的设计哲学：为什么“少”比“多”更难\n\n在科技行业，大多数公司都在拼命往产品里塞功能，苹果却反其道而行之。它的设计哲学可以用一句话概括：技术为人服务，而不是让人迁就技术。\n\n一、少即是多\n\n苹果的产品总给人一种“恰到好处”的感觉。MacBook 的机身没有多余的接口，iPhone 的界面没有多余的按钮，就连包装盒都简洁到极致。但“少”从来不是偷懒，而是把复杂藏在简单背后。\n\n设计并不是它看起来怎么样，而是它用起来怎么样。这句话出自乔布斯，也贯穿了苹果所有产品的灵魂。\n\n二、把细节做到极致\n\n苹果对细节的偏执，体现在很多看不见的地方：\n\n1. 动画曲线：界面切换的动画经过反复调校，快慢恰到好处，不会让人感到生硬\n2. 触感反馈：MacBook 触控板的震动反馈，逼真到像真的按下了物理按键\n3. 音效设计：充电、开机、发送信息的声音，都是专门录制的“真实声源”\n\n这些细节单个看微不足道，叠加起来却构成了“用着舒服”的整体感受。\n\n三、隐私是设计的一部分\n\n苹果把“隐私”当作产品设计的一等公民。很多 AI 计算在设备本地完成，数据不出设备；需要上云的，也会用端到端加密。它不是把隐私做成一个开关，而是把隐私融入整个系统的默认行为里。\n\n四、生态的闭环\n\n苹果的产品之所以好用，很大程度是因为它们是一个整体：\n\n· iPhone 和 Mac 之间，隔空投送让文件秒传\n· 复制一段文字，可以直接在另一台设备上粘贴\n· AirPods 在多个设备间自动切换，无需手动连接\n\n这种“无缝衔接”的体验，是单靠某一款硬件做不到的，靠的是软硬件一体的深度整合。\n\n五、不完美的地方\n\n当然，苹果的设计也不是没有争议。封闭的生态、偏高的售价、部分接口的保守，都让不少用户感到不满。但即便如此，它依然塑造了全球科技产品设计的审美标准。\n\n六、AI 时代的苹果\n\n进入 AI 时代后，苹果依然延续了这套哲学。Apple Intelligence 没有做一个独立的聊天 App，而是把 AI 能力分散到系统各处：写作时帮你润色，拍照后帮你搜索，通知太多时帮你摘要。苹果想证明的是：AI 不是需要用户去学习的工具，而是悄悄融入日常的助手。\n\n结语\n\n设计不是装饰，而是解决问题的方式。苹果用几十年的坚持证明了一件事：当技术足够成熟，真正的竞争力不在于“做得更多”，而在于“做对取舍”。';
+
+
+  input.addEventListener('input', update);
+  btnSample1.addEventListener('click', function () { input.value = sample1; update(); });
+  btnSample2.addEventListener('click', function () { input.value = sample2; update(); });
+  btnSample3.addEventListener('click', function () { input.value = sample3; update(); });
+  btnClear.addEventListener('click', function () { input.value = ''; update(); });
+  btnCopy.addEventListener('click', function () {
+    if (input.value.trim() === '') { alert('先粘贴一段文字'); return; }
+    var ok = copyRich(preview.innerHTML);
+    if (ok) {
+      var old = btnCopy.innerHTML;
+      btnCopy.innerHTML = '已复制 ✓';
+      setTimeout(function () { btnCopy.innerHTML = old; }, 2000);
+    } else {
+      alert('复制失败，请手动选中预览区内容复制');
+    }
+  });
+})();
+</script>
+</body>
+</html>

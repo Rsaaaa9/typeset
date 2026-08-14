@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+
+# 生成物（Word 文档 / 交付压缩包）
+*.docx
+*.zip
+
+# 系统文件
+.DS_Store
+Thumbs.db
