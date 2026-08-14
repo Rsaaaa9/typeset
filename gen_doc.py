@@ -186,7 +186,16 @@ bullet('针对复制兼容性：本地浏览器 + 公众号编辑器两端实测
 bullet('针对“用 AI 排版不稳定”：果断去掉 AI 排版，回归纯规则引擎，把 AI 用在开发侧而不是产品运行侧。')
 bullet('针对实现层的各种 bug：每次改完都重新过一遍完整功能（标题、关键词高亮、列表、复制），而不是只看改动的那一处；并借助浏览器控制台定位“静默报错”。')
 
+h1('3. 开源与交付')
+
+body('这个原型已经开源，方便评审和后续线下面试时查看源码、运行验证。')
+
+bullet('GitHub 仓库：https://github.com/Rsaaaa9/typeset（MIT 协议，中英双语 README）')
+bullet('在线预览：https://rsaaaa9.github.io/typeset/（GitHub Pages 部署，点开即用）')
+bullet('源代码：index.html（单文件，HTML + CSS + JS 全内联，零依赖）')
+bullet('演示视频：秋芝2046线上笔试-郑灿坤-公众号排版器演示视频.mp4（含在交付压缩包内）')
+
 # 保存
-out = r'G:\wwwww\lab\秋芝2046-排版器\秋芝2046-排版器-项目说明-v6.docx'
+out = r'G:\wwwww\lab\秋芝2046-排版器\秋芝2046线上笔试-公众号排版器-项目说明.docx'
 doc.save(out)
 print('saved:', out)

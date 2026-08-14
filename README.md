@@ -91,13 +91,13 @@ cd typeset
 # 无需安装、无需联网、无需构建
 ```
 
-> 或在线预览：把 `index.html` 拖到任意浏览器即可。
+> 或在线预览：**https://rsaaaa9.github.io/typeset/**（GitHub Pages 部署，点开即用）
 
 ### 生成项目说明文档（可选）
 
 ```bash
 pip install python-docx
-python gen_doc.py   # 生成《秋芝2046-排版器-项目说明-v6.docx》
+python gen_doc.py   # 生成《秋芝2046线上笔试-公众号排版器-项目说明.docx》
 ```
 
 ### License
@@ -162,6 +162,8 @@ cd typeset
 # 2. Double-click index.html (or open it in any browser)
 # No install, no network, no build step
 ```
+
+> Or try the live demo: **https://rsaaaa9.github.io/typeset/**
 
 ### License
 
