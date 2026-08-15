@@ -378,14 +378,48 @@
     if (h1) fitTitle(h1);
   }
 
+  // 公众号编辑器只认内联样式、不认 CSS class。复制前把 class 的计算样式「烘焙」成内联 style，
+  // 这样粘贴到公众号后颜色/字号/背景高亮才能保留；否则只剩结构、视觉样式全丢。
+  var BAKE_PROPS = [
+    'color', 'background-color',
+    'font-size', 'font-weight', 'font-style',
+    'letter-spacing', 'line-height', 'text-decoration', 'text-align',
+    'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+    'padding-top', 'padding-right', 'padding-bottom', 'padding-left',
+    'border-top-width', 'border-top-style', 'border-top-color',
+    'border-right-width', 'border-right-style', 'border-right-color',
+    'border-bottom-width', 'border-bottom-style', 'border-bottom-color',
+    'border-left-width', 'border-left-style', 'border-left-color',
+    'border-top-left-radius', 'border-top-right-radius',
+    'border-bottom-left-radius', 'border-bottom-right-radius'
+  ];
+
+  function bakeInlineStyles(root) {
+    var els = root.querySelectorAll('*');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var cs = getComputedStyle(el);
+      var style = '';
+      for (var j = 0; j < BAKE_PROPS.length; j++) {
+        var prop = BAKE_PROPS[j];
+        var val = cs.getPropertyValue(prop);
+        if (val) style += prop + ':' + val + ';';
+      }
+      if (style) el.setAttribute('style', style);
+    }
+  }
+
   function copyRich(html) {
     var container = document.createElement('div');
+    container.className = 'preview';  // 关键：让 .preview h1 / .preview .hl 等后代选择器在 getComputedStyle 时生效
     container.innerHTML = html;
     container.setAttribute('contenteditable', 'true');
     container.style.position = 'fixed';
     container.style.left = '-9999px';
     container.style.top = '0';
     document.body.appendChild(container);
+
+    bakeInlineStyles(container);  // 把 class 样式烘焙成内联 style
 
     var range = document.createRange();
     range.selectNodeContents(container);
