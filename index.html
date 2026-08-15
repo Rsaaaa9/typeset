@@ -96,13 +96,13 @@
     font-size: 16px; line-height: 1.5; margin: 0 0 32px; color: var(--near-black);
   }
   .preview strong { color: var(--apple-blue); font-weight: 600; }
-  /* 小标题：苹果蓝 + 加粗 + 放大一号 + 下划线（下划线只盖文字，不盖冒号） */
+  /* 小标题：苹果蓝 + 加粗（字号与正文一致，避免公众号粘贴时因字号跳变断行） */
   .preview .li-label {
-    color: var(--apple-blue); font-weight: 700; font-size: 19px;
+    color: var(--apple-blue); font-weight: 700; font-size: 16px;
   }
-  /* 关键词：苹果蓝 + 加粗 + 稍放大 + 浅蓝背景填充（标记感，与小标题区分） */
+  /* 关键词：苹果蓝 + 加粗 + 浅蓝背景填充（字号与正文一致，避免公众号粘贴时断行） */
   .preview .hl {
-    color: var(--apple-blue); font-weight: 700; font-size: 17px;
+    color: var(--apple-blue); font-weight: 700; font-size: 16px;
     background: var(--hl-bg);
     padding: 1px 5px; border-radius: 4px;
   }
