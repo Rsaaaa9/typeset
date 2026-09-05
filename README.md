@@ -97,7 +97,7 @@ cd typeset
 
 ```bash
 pip install python-docx
-python gen_doc.py   # 生成《秋芝2046线上笔试-公众号排版器-项目说明.docx》
+python gen_doc.py   # 生成《TypeSet-项目说明.docx》
 ```
 
 ### License

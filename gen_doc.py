@@ -76,7 +76,7 @@ def bullet(text):
 
 
 # ============ 文档内容 ============
-title('秋芝2046 笔试 · 选项二「TypeSet 品牌专属公众号排版器」项目说明')
+title('TypeSet · 品牌专属公众号排版器 · 项目说明')
 subtitle('Rsaaaa9')
 
 # ==================== 1. 产品说明 ====================
@@ -188,14 +188,13 @@ bullet('针对实现层的各种 bug：每次改完都重新过一遍完整功�
 
 h1('3. 开源与交付')
 
-body('这个原型已经开源，方便评审和后续线下面试时查看源码、运行验证。')
+body('这个原型已经开源，方便查看源码、运行验证。')
 
 bullet('GitHub 仓库：https://github.com/Rsaaaa9/typeset（MIT 协议，中英双语 README）')
 bullet('在线预览：https://rsaaaa9.github.io/typeset/（GitHub Pages 部署，点开即用）')
 bullet('源代码：index.html（单文件，HTML + CSS + JS 全内联，零依赖）')
-bullet('演示视频：秋芝2046线上笔试-Rsaaaa9-公众号排版器演示视频.mp4（含在交付压缩包内）')
 
 # 保存
-out = r'G:\wwwww\lab\秋芝2046-排版器\秋芝2046线上笔试-公众号排版器-项目说明.docx'
+out = r'G:\wwwww\lab\typeset\TypeSet-项目说明.docx'
 doc.save(out)
 print('saved:', out)
